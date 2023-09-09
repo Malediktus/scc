@@ -1,7 +1,8 @@
-#include <stdio.h>
+#include "args.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-  printf("Hello World!\n");
+  init_options(argc, argv);
+  free_options();
   return 0;
 }
