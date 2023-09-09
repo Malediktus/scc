@@ -53,5 +53,6 @@ scc
 /autom4te.cache
 configure
 configure~
+Makefile
 *.m4
 *.in
