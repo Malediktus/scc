@@ -13,9 +13,9 @@ typedef struct
   vec_str_t enabled_warnings;
   vec_str_t disabled_warnings;
   vec_str_t input_filepaths;
-} options;
+} options_t;
 
-static options opts;
+static options_t opts;
 
 void print_version(void);
 void print_help(void);
