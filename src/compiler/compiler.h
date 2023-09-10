@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "../utils/vec.h"
 
+struct AST_node;
+
 typedef struct
 {
   char *filepath;
@@ -31,17 +33,17 @@ typedef struct
 token_t *token_create(token_type_t type, const char *text, position_t *start, position_t *end);
 void token_delete(token_t *token);
 
-struct lexer;
+struct compiler;
 
 typedef struct
 {
-  void (*init_lexer)(struct lexer *lexer, const char *text, const char *filepath);
-  void (*deinit_lexer)(struct lexer *lexer);
+  void (*init_lexer)(struct compiler *compiler, const char *text, const char *filepath);
+  void (*deinit_lexer)(struct compiler *compiler);
 
-  token_t *(*lex)(struct lexer *lexer);
+  token_t *(*lex)(struct compiler *compiler);
 } lexer_impl_t;
 
-typedef struct lexer
+typedef struct
 {
   lexer_impl_t *implementation;
   char *text;
@@ -54,10 +56,27 @@ void lexer_delete(lexer_t *lexer);
 
 typedef struct
 {
+  void (*init_parser)(struct compiler *compiler);
+  void (*deinit_parser)(struct compiler *compiler);
+
+  struct AST_node *(*parse)(struct compiler *compiler);
+} parser_impl_t;
+
+typedef struct
+{
+  parser_impl_t *implementation;
+} parser_t;
+
+parser_t *parser_create(parser_impl_t *implementation);
+void parser_delete(parser_t *parser);
+
+typedef struct compiler
+{
   lexer_t *lexer;
+  parser_t *parser;
 } compiler_t;
 
-compiler_t *compiler_create(lexer_t *lexer);
+compiler_t *compiler_create(lexer_t *lexer, parser_t *parser);
 void compiler_delete(compiler_t *compiler);
 
 typedef struct

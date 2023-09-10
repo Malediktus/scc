@@ -10,7 +10,7 @@ typedef enum
   NODE_HEAD
 } node_type_t;
 
-typedef struct
+typedef struct AST_node
 {
   node_type_t type;
   uint32_t level;

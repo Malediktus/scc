@@ -2,10 +2,11 @@
 #include "utils/args.h"
 #include "compiler/compiler.h"
 #include "implementation/c11/lexer.h"
+#include "implementation/c11/parser.h"
 
 void compile_file(char *filepath)
 {
-  compiler_t *compiler = compiler_create(lexer_create(&c11_lexer));
+  compiler_t *compiler = compiler_create(lexer_create(&c11_lexer), parser_create(&c11_parser));
   compilation_process_t *process = compilation_process_create(filepath, opts.output_filepath, compiler);
   FILE *fp = fopen(filepath, "r");
   // TODO: Check if is open
@@ -15,8 +16,11 @@ void compile_file(char *filepath)
   char *text = malloc(filesize + 1);
   fread(text, filesize, 1, fp);
   fclose(fp);
-  compiler->lexer->implementation->init_lexer(compiler->lexer, text, filepath);
+  compiler->lexer->implementation->init_lexer(compiler, text, filepath);
+  compiler->parser->implementation->init_parser(compiler);
 
+  compiler->lexer->implementation->deinit_lexer(compiler);
+  compiler->parser->implementation->deinit_parser(compiler);
   free(text);
   compilation_process_delete(process);
   compiler_delete(compiler);

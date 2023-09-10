@@ -55,10 +55,25 @@ void lexer_delete(lexer_t *lexer)
   free(lexer);
 }
 
-compiler_t *compiler_create(lexer_t *lexer)
+parser_t *parser_create(parser_impl_t *implementation)
+{
+  parser_t *parser = malloc(sizeof(parser_t));
+  parser->implementation = implementation;
+
+  return parser;
+}
+
+void parser_delete(parser_t *parser)
+{
+  assert(parser);
+  free(parser);
+}
+
+compiler_t *compiler_create(lexer_t *lexer, parser_t *parser)
 {
   compiler_t *compiler = malloc(sizeof(compiler_t));
   compiler->lexer = lexer;
+  compiler->parser = parser;
 
   return compiler;
 }
